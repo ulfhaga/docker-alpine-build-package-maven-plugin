@@ -42,7 +42,7 @@ docker run --rm -dit --name apk-build apk-build:latest
 mvn -P docker docker:stop
 
 # Test
-tree /home/ulha/code/dockerAlpineBuildMavenPackage/server/target/docker/quarkus/server-alpine-jvm/build/maven
+tree /home/ulha/code/dockerAlpineBuildMavenPackage/server/target/docker/server-alpine-jvm/server-alpine-jvm/build/maven
 
 http://maven.fabric8.io/
 http://dmp.fabric8.io/#example
@@ -59,9 +59,9 @@ docker exec -it server-alpine-jvm-1   /bin/sh
 mvn -DskipITs -Ddocker.skip install
 
 
-docker run -i --rm -p 64014:64014 quarkus/server-alpine-jvm 
-eller 
-java -jar -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8881  target/server-1.0-SNAPSHOT-runner.jar
+docker run -i --rm -p 64014:8080 docker-alpine-build-package-maven-plugin/server-alpine-jvm 
+or
+java -jar -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005  target/server-1.0-SNAPSHOT-runner.jar
 
 
 http://localhost:64014/v1/packages/1

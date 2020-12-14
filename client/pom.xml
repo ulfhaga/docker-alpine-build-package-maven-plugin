@@ -141,7 +141,7 @@
                     <useColor>true</useColor>
                     <images>
                         <image>
-                            <name>quarkus/server-alpine-jvm</name>
+                            <name>docker-alpine-build-package-maven-plugin/server-alpine-jvm</name>
                             <run>
                                 <ports>
                                     <port>64014:8080</port>

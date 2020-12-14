@@ -27,7 +27,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>4.13</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -112,7 +112,7 @@
                     <useColor>true</useColor>
                     <images>
                         <image>
-                            <name>quarkus/server-alpine-jvm:latest</name>
+                            <name>docker-alpine-build-package-maven-plugin/server-alpine-jvm</name>
                             <run>
                                 <ports>
                                     <port>64014:8080</port>
