@@ -75,18 +75,18 @@ public class Tar
         final String prefix = packageName + "-" + version;
         Path tmpDir = Files.createTempDirectory(prefix);
         Path newSource = Paths.get(tmpDir.toAbsolutePath().toString(), prefix);
-        Files.createDirectory( newSource.toAbsolutePath());
-        FileUtils.copyDirectory(source.toAbsolutePath().toFile(),newSource.toAbsolutePath().toFile());
+        Files.createDirectory(newSource.toAbsolutePath());
+        FileUtils.copyDirectory(source.toAbsolutePath().toFile(), newSource.toAbsolutePath().toFile());
         return createTarContent(tmpDir);
     }
 
     public static void createApkTarContent(Path source, Path archive, String packageName, String version) throws IOException
     {
-       Path tmpDir = Files.createTempDirectory(packageName + "-" + version);
-       Path newSource = Paths.get(tmpDir.toAbsolutePath().toString(), packageName + "-" + version);
-       Files.createDirectory( newSource.toAbsolutePath());
-       FileUtils.copyDirectory(source.toAbsolutePath().toFile(),newSource.toAbsolutePath().toFile());
-       createTarContent(tmpDir,archive);
+        Path tmpDir = Files.createTempDirectory(packageName + "-" + version);
+        Path newSource = Paths.get(tmpDir.toAbsolutePath().toString(), packageName + "-" + version);
+        Files.createDirectory(newSource.toAbsolutePath());
+        FileUtils.copyDirectory(source.toAbsolutePath().toFile(), newSource.toAbsolutePath().toFile());
+        createTarContent(tmpDir, archive);
     }
 
     public static void createTarContent(Path source, Path archive) throws IOException
@@ -96,13 +96,10 @@ public class Tar
             throw new IOException("Please provide a directory.");
         }
 
-        // get folder name as zip file name
-        // String tarFileName = source.getFileName().toString() + ".tar.gz";
         String tarFileName = archive.toFile().getAbsolutePath();
 
         try (OutputStream fOut = Files.newOutputStream(Paths.get(tarFileName));
              BufferedOutputStream buffOut = new BufferedOutputStream(fOut);
-             // GzipCompressorOutputStream gzOut = new GzipCompressorOutputStream(buffOut);
              TarArchiveOutputStream tOut = new TarArchiveOutputStream(buffOut))
         {
             Files.walkFileTree(source, new SimpleFileVisitor<Path>()
@@ -154,7 +151,6 @@ public class Tar
         }
         try (InputStream fi = Files.newInputStream(source);
              BufferedInputStream bi = new BufferedInputStream(fi);
-             //  GzipCompressorInputStream gzi = new GzipCompressorInputStream(bi);
              TarArchiveInputStream ti = new TarArchiveInputStream(bi))
         {
             ArchiveEntry entry;
@@ -186,16 +182,13 @@ public class Tar
     private static Path zipSlipProtect(ArchiveEntry entry, Path targetDir)
             throws IOException
     {
-
         Path targetDirResolved = targetDir.resolve(entry.getName());
-
         Path normalizePath = targetDirResolved.normalize();
 
         if (!normalizePath.startsWith(targetDir))
         {
             throw new IOException("Bad entry: " + entry.getName());
         }
-
         return normalizePath;
     }
 
