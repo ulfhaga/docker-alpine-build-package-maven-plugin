@@ -198,6 +198,7 @@
                             <images>
                                 <image>
                                     <name>docker-alpine-build-package-maven-plugin/server-alpine-jvm</name>
+                                    <registry>docker.pkg.github.com/ulfhaga</registry>
                                     <build>
                                         <contextDir>${project.basedir}/src/main/docker</contextDir>
                                         <assembly>

@@ -7,18 +7,18 @@
 #
 # Then, build the image with:
 #
-# docker build -f Dockerfile --tag quarkus/server-alpine-jvm .
+# docker build -f Dockerfile --tag docker-alpine-build-package-maven-plugin/server-alpine-jvm  .
 #
 # Then run the container using:
 #
-# docker run -i --rm -p 64014:64014 quarkus/server-alpine-jvm
+# docker run -i --rm -p 64014:8080 --name server-alpine-jvm docker-alpine-build-package-maven-plugin/server-alpine-jvm
 #
 # If you want to include the debug port into your docker image
 # you will have to expose the debug port (default 5005) like this :  EXPOSE 64014 5050
 #
 # Then run the container using :
 #
-# docker run -i --rm -p 64014:64014 -p 5005:5005 -e JAVA_ENABLE_DEBUG="true" quarkus/server-alpine-jvm
+# docker run -i --rm -p 64014:8080 -p 5005:5005 -e JAVA_ENABLE_DEBUG="true" --name server-alpine-jvm  docker-alpine-build-package-maven-plugin/server-alpine-jvm
 #
 ###
 FROM alpine:3.12.0

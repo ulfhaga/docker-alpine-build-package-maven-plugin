@@ -20,25 +20,21 @@ See example in file sample/pom.xml.
 
 There are two plugins that are needed
 
-The plugin __se.docker.alpine:plugin-maven__ act as a client to the plugin __io.fabric8:docker-maven-plugin__ that act as server.
-The server is a docker container that builds the package.
+The plugin __se.docker.alpine:plugin-maven__ act as a client. 
+The plugin __io.fabric8:docker-maven-plugin__ that act as server for the client.
 
+The server is a docker container that builds an Alpine package. That package can be installed with the apk command. 
 
 ## Architecture
 
-The maven plugin se.docker.alpine:plugin-maven use the client (module client) to communicate 
-with server inside an Alpine docker container. The container creates the Alpine package. 
+The maven plugin `se.docker.alpine:plugin-maven` use the client (module client) to communicate 
+with server `io.fabric8:docker-maven-plugin` inside an Alpine docker container. The container creates the Alpine package. 
 The plugin can now receive the package via the client (module client).
 
 
 ## Plugin configuration information
 
-The POM defined of the plugin is se.docker.alpine:plugin-maven:1.0
-
-
-
-
-The element configuration contains follow elements:
+This Maven plugin `se.docker.alpine:plugin-maven` has following elements:
 
 ### name
 The package name.
