@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class TarTest
 {
     public static final String SOURCE_TAR = "source.tar";
-    private OutputStream fOut;
 
     @Test
     @Order(1)
@@ -72,7 +71,6 @@ class TarTest
     void createApkTarByteContent() throws IOException
     {
         Path sourceDirectory = Paths.get("src", "test", "resources", "testData","source");
-        Path archive = Paths.get("target", SOURCE_TAR);
         byte[] archiveContent = Tar.createApkTarContent(sourceDirectory,"MyApplication","2.0");
         assertTrue(archiveContent.length > 0 );
 

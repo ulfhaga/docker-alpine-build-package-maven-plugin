@@ -20,8 +20,8 @@ See example in file sample/pom.xml.
 
 There are two plugins that are needed
 
-The plugin __se.docker.alpine:plugin-maven__ act as a client. 
-The plugin __io.fabric8:docker-maven-plugin__ that act as server for the client.
+The plugin `se.docker.alpine:plugin-maven` act as a client. 
+The plugin `io.fabric8:docker-maven-plugin` that act as server for the client.
 
 The server is a docker container that builds an Alpine package. That package can be installed with the apk command. 
 

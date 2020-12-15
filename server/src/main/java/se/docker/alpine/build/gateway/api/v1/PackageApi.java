@@ -368,6 +368,7 @@ public class PackageApi implements RestfulPackageApi
             }
             else
             {
+                LOG.error("Package could not be created");
                 response = Response.serverError().build();
             }
         }

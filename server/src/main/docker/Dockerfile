@@ -26,7 +26,7 @@
 #
 ###
 FROM alpine:3.12.0
-LABEL Description="This image is used to start a Restful serivice to create a Alpine package" Vendor="UH" Version="0.1"
+LABEL Description="This image is used to start a Restful service to create a Alpine package" Vendor="UH" Version="0.1"
 
 ARG JAVA_PACKAGE=openjdk11-jre-headless
 

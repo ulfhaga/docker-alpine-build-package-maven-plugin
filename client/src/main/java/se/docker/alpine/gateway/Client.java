@@ -14,6 +14,8 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.jboss.logging.Logger;
 
 public class Client
@@ -21,7 +23,7 @@ public class Client
     private static final Logger LOG = Logger.getLogger(Client.class);
     final static String BASE_URI = "http://127.0.0.1:64014";
     final ResteasyClient client;
-    static volatile int internalReleaseNumber = 0;
+    final AtomicInteger internalReleaseNumber = new AtomicInteger();
 
     public Client()
     {
@@ -71,7 +73,7 @@ public class Client
         Integer releaseNumber = clientDto.getReleaseNumber() ;
         if (releaseNumber == null)
         {
-            putReleaseNumber(id, internalReleaseNumber++);
+            putReleaseNumber(id, internalReleaseNumber.incrementAndGet());
         }
         else
         {
