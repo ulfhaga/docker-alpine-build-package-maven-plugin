@@ -35,15 +35,8 @@ public class BuildApkFile
         packageFolder = Paths.get(aPortsFolder.toAbsolutePath().toString(), packageData.getName());
     }
 
-    private void copyTarFileToArkBuild(PackageData packageData) throws IOException
-    {
-        String tarFile = packageData.getName() + "-" + packageData.getVersion() + ".tar";
-        Path targetFile = Paths.get(aPortsFolder.toAbsolutePath().toString(), packageData.getName(), tarFile);
-        Path sourceTarFile = Paths.get(packageData.getSource().toAbsolutePath().toString(), "source.tar");
-        Files.copy(sourceTarFile, targetFile);
-    }
 
-    public void run() throws IOException
+    public void updateApkBuildFile() throws IOException
     {
         if (buildApkFile() == 0)
         {
@@ -52,6 +45,42 @@ public class BuildApkFile
             updateApkBuildFile.updateApkBuildFile(apkBuildFile, apkBuildFile);
             copyTarFileToArkBuild(packageData);
         }
+    }
+    
+    public int buildApkPackage()
+    {
+        String[] commandNewApkBuild = {"abuild", "checksum"};
+        Supplier<String[]> command = () -> commandNewApkBuild;
+        int exitVal = command(packageFolder, command);
+
+        if (exitVal == 0)
+        {
+            String[] commandABuild = {"abuild", "-r"};
+            command = () -> commandABuild;
+            exitVal = command(packageFolder, command);
+            if (exitVal != 0)
+            {
+                LOG.errorf("Command %s %s", commandABuild[0], commandABuild[1]);
+            }
+        }
+        else
+        {
+            LOG.errorf("Command %s %s", commandNewApkBuild[0], commandNewApkBuild[1]);
+        }
+        return exitVal;
+    }
+
+    static public ProcessBuilder createProcessBuilder()
+    {
+        return new ProcessBuilder();
+    }
+
+    private void copyTarFileToArkBuild(PackageData packageData) throws IOException
+    {
+        String tarFile = packageData.getName() + "-" + packageData.getVersion() + ".tar";
+        Path targetFile = Paths.get(aPortsFolder.toAbsolutePath().toString(), packageData.getName(), tarFile);
+        Path sourceTarFile = Paths.get(packageData.getSource().toAbsolutePath().toString(), "source.tar");
+        Files.copy(sourceTarFile, targetFile);
     }
 
     private int buildApkFile()
@@ -95,31 +124,5 @@ public class BuildApkFile
         return exitVal;
     }
 
-    static public ProcessBuilder createProcessBuilder()
-    {
-        return new ProcessBuilder();
-    }
 
-    public int buildApkPackage()
-    {
-        String[] commandNewApkBuild = {"abuild", "checksum"};
-        Supplier<String[]> command = () -> commandNewApkBuild;
-        int exitVal = command(packageFolder, command);
-
-        if (exitVal == 0)
-        {
-            String[] commandABuild = {"abuild", "-r"};
-            command = () -> commandABuild;
-            exitVal = command(packageFolder, command);
-            if (exitVal != 0)
-            {
-                LOG.errorf("Command %s %s", commandABuild[0], commandABuild[1]);
-            }
-        }
-        else
-        {
-            LOG.errorf("Command %s %s", commandNewApkBuild[0], commandNewApkBuild[1]);
-        }
-        return exitVal;
-    }
 }
