@@ -12,7 +12,7 @@
 #
 # Then run the container using:
 #
-# docker run -i --rm  --name server-alpine-jvm --mount type=bind,src=homeDev,dst=/home/dev,bind-propagation=shared -p 64014:64014 quarkus/server-alpine-jvm
+# docker run -i --rm  --name server-alpine-jvm --mount type=bind,src=homeDev,dst=/home/dev,bind-propagation=shared -p 64014:8080 docker-alpine-build-package-maven-plugin/server-alpine-jvm
 # or
 # mvn -P docker docker:start
 # ( mvn -P docker docker:stop )
@@ -22,11 +22,11 @@
 #
 # Then run the container using :
 #
-# docker run -i --rm -p 64014:8080 -p 5005:5005 -e JAVA_ENABLE_DEBUG="true" quarkus/server-alpine-jvm
+# docker run -i --rm -p 64014:8080 -p 5005:5005 -e JAVA_ENABLE_DEBUG="true" --name server-alpine-jvm docker-alpine-build-package-maven-plugin/server-alpine-jvm
 #
 ###
 FROM alpine:3.12.0
-LABEL Description="This image is used to start a Restful service to create a Alpine package" Vendor="UH" Version="0.1"
+LABEL Description="This image is used to start a Restful service to create an Alpine package" Vendor="UH" Version="0.1"
 
 ARG JAVA_PACKAGE=openjdk11-jre-headless
 
@@ -91,5 +91,6 @@ USER dev
 WORKDIR /home/dev
 
 RUN abuild-keygen -a -n
+RUN tar -cvf /home/dev/keys.tar /etc/apk/keys
 
 ENTRYPOINT [ "/usr/local/lib/alpine/run-java.sh" ]

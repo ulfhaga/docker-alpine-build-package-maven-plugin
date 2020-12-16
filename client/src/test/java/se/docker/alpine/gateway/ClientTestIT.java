@@ -30,5 +30,7 @@ class ClientTestIT
 
         Client client = new Client();
         client.send(clientDto);
+
+        client.getKeys(Paths.get("/tmp"));
     }
 }

@@ -21,6 +21,7 @@ public class BuildApkFile
     private final PackageData packageData;
     private final Path aPortsFolder;
     private final Path packageFolder;
+    private final Path targetFolder;
 
 
     public BuildApkFile(ProcessBuilder processBuilder, PackageData packageData) throws IOException
@@ -32,21 +33,20 @@ public class BuildApkFile
         Files.createDirectory(aPortsFolder);
 
         // Create package folder
+        targetFolder = aPortsFolder.getParent();
         packageFolder = Paths.get(aPortsFolder.toAbsolutePath().toString(), packageData.getName());
     }
 
 
     public void updateApkBuildFile() throws IOException
     {
-        if (buildApkFile() == 0)
-        {
-            UpdateApkBuildFile updateApkBuildFile = new UpdateApkBuildFile(packageData);
-            Path apkBuildFile = Paths.get(aPortsFolder.toAbsolutePath().toString(), packageData.getName(), "APKBUILD");
-            updateApkBuildFile.updateApkBuildFile(apkBuildFile, apkBuildFile);
-            copyTarFileToArkBuild(packageData);
-        }
+        buildApkFile();
+        UpdateApkBuildFile updateApkBuildFile = new UpdateApkBuildFile(packageData);
+        Path apkBuildFile = Paths.get(aPortsFolder.toAbsolutePath().toString(), packageData.getName(), "APKBUILD");
+        updateApkBuildFile.updateApkBuildFile(apkBuildFile, apkBuildFile);
+        copyTarFileToArkBuild(packageData);
     }
-    
+
     public int buildApkPackage()
     {
         String[] commandNewApkBuild = {"abuild", "checksum"};
@@ -60,12 +60,12 @@ public class BuildApkFile
             exitVal = command(packageFolder, command);
             if (exitVal != 0)
             {
-                LOG.errorf("Command %s %s", commandABuild[0], commandABuild[1]);
+                LOG.errorf("Linux command {0} {1}", commandABuild[0], commandABuild[1]);
             }
         }
         else
         {
-            LOG.errorf("Command %s %s", commandNewApkBuild[0], commandNewApkBuild[1]);
+            LOG.errorf("Linux command {0} {1}", commandNewApkBuild[0], commandNewApkBuild[1]);
         }
         return exitVal;
     }
@@ -109,16 +109,16 @@ public class BuildApkFile
             exitVal = process.waitFor();
             if (exitVal == 0)
             {
-                LOG.debugv("Success: %s ", output);
+                LOG.debugv("Success: {0} ", output);
             }
             else
             {
-                LOG.errorf("ERROR: %s ", output);
+                LOG.errorf("ERROR: {0} ", output);
             }
         }
         catch (IOException | InterruptedException e)
         {
-            LOG.errorf("ERROR: %s ", e.getMessage());
+            LOG.errorf("ERROR: {0} ", e.getMessage());
             exitVal = 2;
         }
         return exitVal;

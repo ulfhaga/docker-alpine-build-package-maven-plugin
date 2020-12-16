@@ -5,6 +5,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import se.docker.alpine.api.v1.RestfulPackageApi;
 import se.docker.alpine.api.v1.RestfulPackagesApi;
+import se.docker.alpine.api.v1.RestfulSystemApi;
 import se.docker.alpine.compress.Tar;
 
 import javax.ws.rs.InternalServerErrorException;
@@ -68,6 +69,21 @@ public class Client
         }
     }
 
+    public void getKeys(Path folder) throws IOException
+    {
+        byte[] packageAkp  =  getTarKeys();
+        if ( Files.notExists(folder))
+        {
+            Files.createDirectories(folder);
+        }
+
+        Path apkFile = Paths.get(folder.toAbsolutePath().toString(), "keys.tar");
+        Files.deleteIfExists(apkFile);
+        try (FileOutputStream stream = new FileOutputStream(apkFile.toString())) {
+            stream.write(packageAkp);
+        }
+    }
+
     private void putReleaseNumber(ClientDto clientDto, String id)
     {
         Integer releaseNumber = clientDto.getReleaseNumber() ;
@@ -86,7 +102,7 @@ public class Client
         ResteasyWebTarget target = client.target(BASE_URI);
         RestfulPackageApi proxy = target.proxy(RestfulPackageApi.class);
         Response response = proxy.setUrl(Long.valueOf(path),description);
-        LOG.debugf("HTTP code: %s", response.getStatus());
+        LOG.debugf("HTTP code: {0}", response.getStatus());
         response.close();
     }
 
@@ -238,16 +254,32 @@ public class Client
 
     private byte[] getPackage(String path) throws IOException
     {
-        byte[] name;
+        byte[] tarContent = null;
         ResteasyWebTarget target = client.target(BASE_URI);
         RestfulPackageApi proxy = target.proxy(RestfulPackageApi.class);
         Response response = proxy.getPackage(Long.valueOf(path));
-        name = response.readEntity(byte[].class);
-        System.out.println("HTTP code: " + response.getStatus());
-        response.close();
-        return name;
+    //    if ( response.getStatus() == Response.Status.OK.getStatusCode())
+        {
+            tarContent = response.readEntity(byte[].class);
+            System.out.println("HTTP code: " + response.getStatus());
+            response.close();
+        }
+        return tarContent;
     }
 
-
-
+    private byte[] getTarKeys() throws IOException
+    {
+        byte[] keysTar = null;
+        ResteasyWebTarget target = client.target(BASE_URI);
+        RestfulSystemApi proxy = target.proxy(RestfulSystemApi.class);
+        Response response = proxy.downloadKeys();
+        if ( response.getStatus() == Response.Status.OK.getStatusCode())
+        {
+            keysTar = response.readEntity(byte[].class);
+            System.out.println("HTTP code: " + response.getStatus());
+            response.close();
+        }
+        return keysTar;
+    }
+    
 }
