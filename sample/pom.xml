@@ -90,7 +90,8 @@
                     <url>http://www.github.com</url>
                     <description>testing</description>
                     <target>${project.basedir}/target</target>
-                    <packageFunction>![CDATA[install -Dm755 hello.sh "$pkgdir"/usr/bin/hello1.sh]]</packageFunction>
+                    <keysTarget>${project.basedir}/target</keysTarget>
+                    <packageFunction>install -Dm755 hello.sh "$pkgdir"/usr/bin/hello1.sh</packageFunction>
                 </configuration>
                 <executions>
                     <execution>
@@ -98,6 +99,7 @@
                         <phase>pre-integration-test</phase>
                         <goals>
                             <goal>create</goal>
+                            <goal>keys</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -149,7 +151,6 @@
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
 </project>

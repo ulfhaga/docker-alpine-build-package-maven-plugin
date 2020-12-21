@@ -2,6 +2,7 @@ package se.docker.alpine.mojo;
 
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import se.docker.alpine.gateway.Client;
 
 import java.io.IOException;
@@ -12,13 +13,19 @@ public class KeysMojo implements org.apache.maven.plugin.Mojo
 {
     private Log log;
 
+    @Parameter(property = "keysTarget", required = false)
+    private String keysTarget;
+
     @Override
     public void execute()
     {
         Client client = new Client();
         try
         {
-            client.getKeys(Paths.get("/tmp"));
+            if ( keysTarget != null && !keysTarget.isEmpty())
+            {
+                client.getKeys(Paths.get(keysTarget));
+            }
         }
         catch (IOException e)
         {

@@ -24,7 +24,7 @@ public class Client
     private static final Logger LOG = Logger.getLogger(Client.class);
     final static String BASE_URI = "http://127.0.0.1:64014";
     final ResteasyClient client;
-    final AtomicInteger internalReleaseNumber = new AtomicInteger();
+    final AtomicInteger internalReleaseNumber = new AtomicInteger(-1);
 
     public Client()
     {
@@ -35,6 +35,7 @@ public class Client
     public void send(ClientDto clientDto) throws IOException
     {
         String uri;
+        LOG.debugf("Client DTO %s", clientDto.toString());
         uri = createCollection();
 
 
@@ -57,7 +58,9 @@ public class Client
             {
                 Files.createDirectory(clientDto.getTarget());
             }
-            Path apkFile = Paths.get(clientDto.getTarget().toAbsolutePath().toString(), clientDto.getName() + "-" + clientDto.getVersion() + ".apk");
+            final String fileApk = clientDto.getName() + "-" + clientDto.getVersion() + "-r" + internalReleaseNumber.get() + ".apk";
+            Path apkFile = Paths.get(clientDto.getTarget().toAbsolutePath().toString(), fileApk);
+         //   Path apkFile = Paths.get(clientDto.getTarget().toAbsolutePath().toString(), clientDto.getName() + "-" + clientDto.getVersion() + ".apk");
             try (FileOutputStream stream = new FileOutputStream(apkFile.toAbsolutePath().toString())) {
                 stream.write(packageAkp);
             }
@@ -77,7 +80,7 @@ public class Client
             Files.createDirectories(folder);
         }
 
-        Path apkFile = Paths.get(folder.toAbsolutePath().toString(), "keys.tar");
+        Path apkFile = Paths.get(folder.toAbsolutePath().toString(), "key.rsa.pub");
         Files.deleteIfExists(apkFile);
         try (FileOutputStream stream = new FileOutputStream(apkFile.toString())) {
             stream.write(packageAkp);
@@ -94,6 +97,7 @@ public class Client
         else
         {
             putReleaseNumber(id, releaseNumber);
+            internalReleaseNumber.set(releaseNumber);
         }
     }
 
@@ -258,7 +262,7 @@ public class Client
         ResteasyWebTarget target = client.target(BASE_URI);
         RestfulPackageApi proxy = target.proxy(RestfulPackageApi.class);
         Response response = proxy.getPackage(Long.valueOf(path));
-    //    if ( response.getStatus() == Response.Status.OK.getStatusCode())
+   //     if ( response.getStatus() == Response.Status.OK.getStatusCode())
         {
             tarContent = response.readEntity(byte[].class);
             System.out.println("HTTP code: " + response.getStatus());

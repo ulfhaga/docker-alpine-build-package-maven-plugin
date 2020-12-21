@@ -24,13 +24,13 @@ public class SystemApi implements RestfulSystemApi
     public Response downloadKeys()
     {
         Response.ResponseBuilder response;
-        File fileDownload = new File("/home/dev/keys.tar");
+        File fileDownload = new File("/home/dev/key.rsa.pub");
         byte[] sourceTar = new byte[0];
         try
         {
             sourceTar = Files.readAllBytes(fileDownload.toPath());
             response = Response.ok().entity(sourceTar);
-            response.header("Content-Disposition", "attachment;filename=" + "key.tar");
+            response.header("Content-Disposition", "attachment;filename=" + "key.rsa.pub");
         }
         catch (IOException e)
         {

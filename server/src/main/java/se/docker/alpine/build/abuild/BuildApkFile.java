@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.function.Supplier;
 
 /**
@@ -60,12 +61,12 @@ public class BuildApkFile
             exitVal = command(packageFolder, command);
             if (exitVal != 0)
             {
-                LOG.errorf("Linux command {0} {1}", commandABuild[0], commandABuild[1]);
+                LOG.errorf("Linux command %s %s", commandABuild[0], commandABuild[1]);
             }
         }
         else
         {
-            LOG.errorf("Linux command {0} {1}", commandNewApkBuild[0], commandNewApkBuild[1]);
+            LOG.errorf("Linux command %s %s", commandNewApkBuild[0], commandNewApkBuild[1]);
         }
         return exitVal;
     }
@@ -93,6 +94,7 @@ public class BuildApkFile
     private int command(Path workFolder, Supplier<String[]> supplier)
     {
         int exitVal;
+        LOG.debugf("Command: %s ", String.join(" ", supplier.get()));
         processBuilder.command(supplier.get());
         try
         {
@@ -104,21 +106,22 @@ public class BuildApkFile
             String line;
             while ((line = reader.readLine()) != null)
             {
-                output.append(line).append("\n");
+                output.append(line).append(" ");
             }
             exitVal = process.waitFor();
             if (exitVal == 0)
             {
-                LOG.debugv("Success: {0} ", output);
+                LOG.debug("Command success");
             }
             else
             {
-                LOG.errorf("ERROR: {0} ", output);
+                LOG.errorf("Command exit code %d ", exitVal);
+                LOG.errorf("Command response: %s ", output.toString());
             }
         }
         catch (IOException | InterruptedException e)
         {
-            LOG.errorf("ERROR: {0} ", e.getMessage());
+            LOG.errorf("Command exception: %s ", e.getMessage());
             exitVal = 2;
         }
         return exitVal;

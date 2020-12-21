@@ -1,7 +1,6 @@
 package se.docker.alpine.build.abuild;
 
 import org.jboss.logging.Logger;
-import se.docker.alpine.build.gateway.api.v1.PackageApi;
 import se.docker.alpine.build.model.PackageData;
 
 import javax.ws.rs.InternalServerErrorException;
@@ -68,7 +67,7 @@ public class UpdateApkBuildFile
         }
         else
         {
-            LOG.errorf("File {0} is missing", apkBuildFile.toAbsolutePath().toString());
+            LOG.errorf("File %s is missing", apkBuildFile.toAbsolutePath().toString());
             throw new InternalServerErrorException();
         }
     }

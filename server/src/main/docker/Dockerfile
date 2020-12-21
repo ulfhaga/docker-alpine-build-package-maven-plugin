@@ -32,27 +32,23 @@ ARG JAVA_PACKAGE=openjdk11-jre-headless
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 
-# Install java and the run-java script
-RUN apk add openjdk11-jre-headless \
-    && apk update \
-    && apk add vim \
-    && apk add tree \
-    && apk add busybox \
-    && apk add leafpad \
-    && apk add leafpad-lang \
-    && apk add alpine-sdk \
-    && apk --update add ttf-ubuntu-font-family \
-    && apk update \
-    && apk add curl ca-certificates ${JAVA_PACKAGE} \
-    && apk update
+# Install java and other packages
+RUN apk add --update ${JAVA_PACKAGE}  \
+    vim tree busybox leafpad \
+    leafpad-lang \
+    alpine-sdk \
+    ttf-ubuntu-font-family \
+    ca-certificates \
+    sudo
 
 # Create user dev
-RUN mkdir -p /home/dev \
-    && adduser --disabled-password dev \
-    && chown -R dev:dev /home/dev
+RUN adduser -h /home/dev --disabled-password dev
 
 #  Add the user dev to group abuild
 RUN addgroup dev abuild
+
+# Add to sudoers
+RUN echo 'dev ALL=(ALL:ALL) ALL' >> /etc/sudoers;
 
 # Runner
 COPY maven/src/main/docker/fabric8/run-java.sh /usr/local/lib/alpine/
@@ -64,12 +60,14 @@ RUN chown dev /usr/local/lib/alpine\
 
 ## Configure the JAVA_OPTIONS, you can add -XshowSettings:vm to also display the heap size.
 ENV JAVA_OPTIONS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
+
+## Copy the application
 COPY maven/target/lib/* /usr/local/lib/alpine/lib/
 COPY maven/target/*-runner.jar /usr/local/lib/alpine/app.jar
 EXPOSE 8080
 
 
-# Alpine package scripts
+# Add Alpine package scripts
 
 RUN sed -i -e 's/#PACKAGER="Your Name <your@email.address>"/PACKAGER="dev <dev@email.address>"/g'  /etc/abuild.conf
 
@@ -86,11 +84,16 @@ RUN chgrp -R -v abuild /home/dev/aports
 # Healtcheck
 HEALTHCHECK --start-period=1s --interval=30s --timeout=4s CMD curl -f http://localhost:8080/health/ready || exit 1
 
+# Build keys
+RUN sudo -u dev abuild-keygen -a -n -i
+# RUN tar -cvf /home/dev/keys.tar /etc/apk/keys
+RUN cp -u  /home/dev/.abuild/dev*.rsa.pub /etc/apk/keys
+RUN cp -u  /home/dev/.abuild/dev*.rsa.pub /home/dev/key.rsa.pub
+RUN cp -u  /home/dev/.abuild/dev*.rsa /home/dev/key.rsa
+
 # Set user                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     WORKDIR /home/dev
 USER dev
+# USER root
 WORKDIR /home/dev
-
-RUN abuild-keygen -a -n
-RUN tar -cvf /home/dev/keys.tar /etc/apk/keys
 
 ENTRYPOINT [ "/usr/local/lib/alpine/run-java.sh" ]

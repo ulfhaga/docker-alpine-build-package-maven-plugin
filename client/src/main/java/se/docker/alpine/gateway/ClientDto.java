@@ -95,7 +95,6 @@ public class ClientDto
         return releaseNumber;
     }
 
-
     public Path getTarget()
     {
         return target;
@@ -116,5 +115,10 @@ public class ClientDto
         return packageFunction;
     }
 
+    public String toString()
+    {
+        return (String.join(";", "name:", getName(), "version:", getVersion(), "releaseNumber:", String.valueOf(getReleaseNumber()), "source:", getSource().toString(),
+                "arch:", getArch(), "license:", getLicense(), "description", getDescription(), "url:", getUrl(), "target", getTarget().toString(), "packageFunction:", getPackageFunction()));
+    }
 
 }

@@ -60,10 +60,13 @@ To access the files in source, use the varible $pkgdir".
 
 The created package file name is mypackage-1.0.apk in this example.
 
-    docker run --name alpine -dit alpine sh  
-    docker cp sample/target/mypackage-1.0.apk alpine:/
+    docker run --rm --name alpine -dit alpine sh  
+    docker cp sample/target/mypackage-1.0-r0.apk alpine:/  
+    docker exec -it alpine mkdir -p /etc/apt/keys
+    docker cp sample/target/key.rsa.pub alpine:/etc/apt/keys
+
     docker exec -it alpine /bin/ash
-    apk add --allow-untrusted mypackage-1.0.apk
+    apk add --allow-untrusted mypackage-1.0-r0.apk
     /usr/bin/hello.sh
 
 ## Developing
