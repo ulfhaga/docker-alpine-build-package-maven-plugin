@@ -1,5 +1,6 @@
 package se.docker.alpine.gateway;
 
+import org.jboss.logging.Logger;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
@@ -10,14 +11,13 @@ import se.docker.alpine.compress.Tar;
 
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.core.Response;
-import java.io.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.jboss.logging.Logger;
 
 public class Client
 {
@@ -42,26 +42,27 @@ public class Client
         if (uri.startsWith(RestfulPackageApi.V_1_PACKAGES))
         {
             String id = uri.substring(RestfulPackageApi.V_1_PACKAGES.length());
-            putName(id,clientDto.getName());
-            putVersion(id,clientDto.getVersion());
+            putName(id, clientDto.getName());
+            putVersion(id, clientDto.getVersion());
 
             putReleaseNumber(clientDto, id);
-            putArch(id,clientDto.getArch());
-            putLicence(id,clientDto.getLicense());
-            putDescription(id,clientDto.getDescription());
-            putUrl(id,clientDto.getUrl());
-            putSource(id,clientDto.getSource(), clientDto.getName(), clientDto.getVersion());
-            putPackageFunction(id,clientDto.getPackageFunction());
+            putArch(id, clientDto.getArch());
+            putLicence(id, clientDto.getLicense());
+            putDescription(id, clientDto.getDescription());
+            putUrl(id, clientDto.getUrl());
+            putSource(id, clientDto.getSource(), clientDto.getName(), clientDto.getVersion());
+            putPackageFunction(id, clientDto.getPackageFunction());
             byte[] packageAkp = getPackage(id);
 
-            if ( Files.notExists(clientDto.getTarget()))
+            if (Files.notExists(clientDto.getTarget()))
             {
                 Files.createDirectory(clientDto.getTarget());
             }
             final String fileApk = clientDto.getName() + "-" + clientDto.getVersion() + "-r" + internalReleaseNumber.get() + ".apk";
             Path apkFile = Paths.get(clientDto.getTarget().toAbsolutePath().toString(), fileApk);
-         //   Path apkFile = Paths.get(clientDto.getTarget().toAbsolutePath().toString(), clientDto.getName() + "-" + clientDto.getVersion() + ".apk");
-            try (FileOutputStream stream = new FileOutputStream(apkFile.toAbsolutePath().toString())) {
+            //   Path apkFile = Paths.get(clientDto.getTarget().toAbsolutePath().toString(), clientDto.getName() + "-" + clientDto.getVersion() + ".apk");
+            try (FileOutputStream stream = new FileOutputStream(apkFile.toAbsolutePath().toString()))
+            {
                 stream.write(packageAkp);
             }
 
@@ -74,22 +75,23 @@ public class Client
 
     public void getKeys(Path folder) throws IOException
     {
-        byte[] packageAkp  =  getTarKeys();
-        if ( Files.notExists(folder))
+        byte[] packageAkp = getTarKeys();
+        if (Files.notExists(folder))
         {
             Files.createDirectories(folder);
         }
 
-        Path apkFile = Paths.get(folder.toAbsolutePath().toString(), "key.rsa.pub");
+        Path apkFile = Paths.get(folder.toAbsolutePath().toString(), "pubKey.tar");
         Files.deleteIfExists(apkFile);
-        try (FileOutputStream stream = new FileOutputStream(apkFile.toString())) {
+        try (FileOutputStream stream = new FileOutputStream(apkFile.toString()))
+        {
             stream.write(packageAkp);
         }
     }
 
     private void putReleaseNumber(ClientDto clientDto, String id)
     {
-        Integer releaseNumber = clientDto.getReleaseNumber() ;
+        Integer releaseNumber = clientDto.getReleaseNumber();
         if (releaseNumber == null)
         {
             putReleaseNumber(id, internalReleaseNumber.incrementAndGet());
@@ -105,7 +107,7 @@ public class Client
     {
         ResteasyWebTarget target = client.target(BASE_URI);
         RestfulPackageApi proxy = target.proxy(RestfulPackageApi.class);
-        Response response = proxy.setUrl(Long.valueOf(path),description);
+        Response response = proxy.setUrl(Long.valueOf(path), description);
         LOG.debugf("HTTP code: {0}", response.getStatus());
         response.close();
     }
@@ -114,7 +116,7 @@ public class Client
     {
         ResteasyWebTarget target = client.target(BASE_URI);
         RestfulPackageApi proxy = target.proxy(RestfulPackageApi.class);
-        Response response = proxy.setDescription(Long.valueOf(path),description);
+        Response response = proxy.setDescription(Long.valueOf(path), description);
         System.out.println("HTTP code: " + response.getStatus());
         response.close();
     }
@@ -123,7 +125,7 @@ public class Client
     {
         ResteasyWebTarget target = client.target(BASE_URI);
         RestfulPackageApi proxy = target.proxy(RestfulPackageApi.class);
-        Response response = proxy.setLicense(Long.valueOf(path),license);
+        Response response = proxy.setLicense(Long.valueOf(path), license);
         System.out.println("HTTP code: " + response.getStatus());
         response.close();
     }
@@ -132,7 +134,7 @@ public class Client
     {
         ResteasyWebTarget target = client.target(BASE_URI);
         RestfulPackageApi proxy = target.proxy(RestfulPackageApi.class);
-        Response response = proxy.setArch(Long.valueOf(path),arch);
+        Response response = proxy.setArch(Long.valueOf(path), arch);
         System.out.println("HTTP code: " + response.getStatus());
         response.close();
     }
@@ -153,7 +155,7 @@ public class Client
     {
         ResteasyWebTarget target = client.target(BASE_URI);
         RestfulPackageApi proxy = target.proxy(RestfulPackageApi.class);
-        Response response = proxy.setVersion(Long.valueOf(path),version);
+        Response response = proxy.setVersion(Long.valueOf(path), version);
         System.out.println("HTTP code: " + response.getStatus());
         response.close();
     }
@@ -174,7 +176,7 @@ public class Client
     {
         ResteasyWebTarget target = client.target(BASE_URI);
         RestfulPackageApi proxy = target.proxy(RestfulPackageApi.class);
-        Response response = proxy.setReleaseNumber(Long.valueOf(path),version);
+        Response response = proxy.setReleaseNumber(Long.valueOf(path), version);
         System.out.println("HTTP code: " + response.getStatus());
         response.close();
     }
@@ -195,7 +197,7 @@ public class Client
     {
         ResteasyWebTarget target = client.target(BASE_URI);
         RestfulPackageApi proxy = target.proxy(RestfulPackageApi.class);
-        Response response = proxy.setPackageFunction(Long.valueOf(path),function);
+        Response response = proxy.setPackageFunction(Long.valueOf(path), function);
         System.out.println("HTTP code: " + response.getStatus());
         response.close();
     }
@@ -224,12 +226,12 @@ public class Client
         response.close();
         return path;
     }
-    
+
     private void putName(String path, String name)
     {
         ResteasyWebTarget target = client.target(BASE_URI);
         RestfulPackageApi proxy = target.proxy(RestfulPackageApi.class);
-        Response response = proxy.setName(Long.valueOf(path),name);
+        Response response = proxy.setName(Long.valueOf(path), name);
         System.out.println("HTTP code: " + response.getStatus());
         response.close();
     }
@@ -246,12 +248,12 @@ public class Client
         return name;
     }
 
-    private void putSource(String id, Path sourceFolder,String packName, String version) throws IOException
+    private void putSource(String id, Path sourceFolder, String packName, String version) throws IOException
     {
-        byte[] tarFileContent = Tar.createApkTarContent(sourceFolder,packName, version);
+        byte[] tarFileContent = Tar.createApkTarContent(sourceFolder, packName, version);
         ResteasyWebTarget target = client.target(BASE_URI);
         RestfulPackageApi proxy = target.proxy(RestfulPackageApi.class);
-        Response response = proxy.putSource(Long.valueOf(id),tarFileContent);
+        Response response = proxy.putSource(Long.valueOf(id), tarFileContent);
         System.out.println("HTTP code: " + response.getStatus());
         response.close();
     }
@@ -262,7 +264,7 @@ public class Client
         ResteasyWebTarget target = client.target(BASE_URI);
         RestfulPackageApi proxy = target.proxy(RestfulPackageApi.class);
         Response response = proxy.getPackage(Long.valueOf(path));
-   //     if ( response.getStatus() == Response.Status.OK.getStatusCode())
+        //     if ( response.getStatus() == Response.Status.OK.getStatusCode())
         {
             tarContent = response.readEntity(byte[].class);
             System.out.println("HTTP code: " + response.getStatus());
@@ -277,7 +279,7 @@ public class Client
         ResteasyWebTarget target = client.target(BASE_URI);
         RestfulSystemApi proxy = target.proxy(RestfulSystemApi.class);
         Response response = proxy.downloadKeys();
-        if ( response.getStatus() == Response.Status.OK.getStatusCode())
+        if (response.getStatus() == Response.Status.OK.getStatusCode())
         {
             keysTar = response.readEntity(byte[].class);
             System.out.println("HTTP code: " + response.getStatus());
@@ -285,5 +287,5 @@ public class Client
         }
         return keysTar;
     }
-    
+
 }

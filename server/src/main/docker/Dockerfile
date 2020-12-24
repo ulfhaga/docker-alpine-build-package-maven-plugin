@@ -88,8 +88,15 @@ HEALTHCHECK --start-period=1s --interval=30s --timeout=4s CMD curl -f http://loc
 RUN sudo -u dev abuild-keygen -a -n -i
 # RUN tar -cvf /home/dev/keys.tar /etc/apk/keys
 RUN cp -u  /home/dev/.abuild/dev*.rsa.pub /etc/apk/keys
-RUN cp -u  /home/dev/.abuild/dev*.rsa.pub /home/dev/key.rsa.pub
-RUN cp -u  /home/dev/.abuild/dev*.rsa /home/dev/key.rsa
+# RUN cp -u  /home/dev/.abuild/dev*.rsa.pub /home/dev/key.rsa.pub
+# RUN cp -u  /home/dev/.abuild/dev*.rsa /home/dev/key.rsa
+
+RUN mkdir  /home/dev/keys
+RUN cp -u  /home/dev/.abuild/dev*.rsa.pub /home/dev/keys
+# RUN tar -cvf /home/dev/keys/pubKey.tar -C /home/dev/keys/  dev*.rsa.pub
+RUN tar -cvf /home/dev/keys/pubKey.tar --directory=/home/dev/keys/ $( cd /home/dev/keys/; ls dev*.rsa.pub; )
+#RUN tar -cvf /home/dev/keys/pubKey.tar /home/dev/keys/dev*.rsa.pub
+
 
 # Set user                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     WORKDIR /home/dev
 USER dev
