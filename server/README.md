@@ -1,8 +1,8 @@
 # server project
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+The server will be deployed inside the docker container,
+The server is a micr
 
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
 
 ## Packaging and running the application
 

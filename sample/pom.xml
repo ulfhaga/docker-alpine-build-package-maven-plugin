@@ -91,7 +91,7 @@
                     <description>testing</description>
                     <target>${project.basedir}/target</target>
                     <keysTarget>${project.basedir}/target</keysTarget>
-                    <packageFunction>install -Dm755 hello.sh "$pkgdir"/usr/bin/hello1.sh</packageFunction>
+                    <packageFunction>install -Dm755 hello.sh "$pkgdir"/usr/bin/hello.sh</packageFunction>
                 </configuration>
                 <executions>
                     <execution>
