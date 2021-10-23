@@ -8,7 +8,7 @@ In the plugin se.docker.alpine:plugin-maven, you can specify the package name, v
 ## How it works
 
 1. The plugin io.fabric8:docker-maven-plugin starts the container from the image server-alpine-jvm. (The image must have been build first). 
-2. The plugin se.docker.alpine:plugin-maven supplied package name, version, scripts etc. to the docker container.
+2. The plugin se.docker.alpine:plugin-maven has the package name, version, scripts etc. This information will be sent to the container.
 3. An Alpine package can now be build in the container.
 4. The plugin se.docker.alpine:plugin-maven gets the Alpine package from container.
 
