@@ -1,14 +1,14 @@
 # TOOLS TO CREATE LINUX ALPINE PACKAGE
 
-To create an [Alpine](https://alpinelinux.org/) package the Maven plugins se.docker.alpine:plugin-maven, [io.fabric8:docker-maven-plugin](https://dmp.fabric8.io/)
-and docker image called docker-alpine-build-package-maven-plugin/server-alpine-jvm are needed.
+Creates an [Alpine](https://alpinelinux.org/) package with theses two Maven plugins se.docker.alpine:plugin-maven, [io.fabric8:docker-maven-plugin](https://dmp.fabric8.io/)
+and a docker image called docker-alpine-build-package-maven-plugin/server-alpine-jvm.
 
 In the plugin se.docker.alpine:plugin-maven, you can specify the package name, version, scripts etc.
 
 ## How it works
 
 1. The plugin io.fabric8:docker-maven-plugin starts the container from the image server-alpine-jvm. (The image must have been build first). 
-2. The plugin se.docker.alpine:plugin-maven supplied package name, version, scripts etc. to the docker container.
+2. The plugin se.docker.alpine:plugin-maven has the package name, version, scripts etc. This information will be sent to the container.
 3. An Alpine package can now be build in the container.
 4. The plugin se.docker.alpine:plugin-maven gets the Alpine package from container.
 
