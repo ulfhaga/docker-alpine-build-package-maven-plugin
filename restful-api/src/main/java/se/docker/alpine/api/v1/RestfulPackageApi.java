@@ -57,8 +57,6 @@ public interface RestfulPackageApi
     @Consumes(MediaType.TEXT_PLAIN)
     Response getVersion(@PathParam("id") Long id);
 
-
-
     @Path("releaseNumber")
     @PUT
     @Produces(MediaType.TEXT_PLAIN)
