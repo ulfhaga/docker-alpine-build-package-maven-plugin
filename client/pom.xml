@@ -17,6 +17,7 @@
         <docker-maven-plugin.version>0.33.0</docker-maven-plugin.version>
         <quarkus.http.test-port>0</quarkus.http.test-port>
         <skipITs>false</skipITs>
+        <resteasy.version>3.0.2.Final</resteasy.version>
     </properties>
 
     <dependencyManagement>
@@ -36,24 +37,24 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-jaxrs</artifactId>
-            <version>3.0.2.Final</version>
+            <version>${resteasy.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-jaxb-provider</artifactId>
-            <version>3.0.2.Final</version>
+            <version>${resteasy.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>jaxrs-api</artifactId>
-            <version>3.0.2.Final</version>
+            <version>${resteasy.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client</artifactId>
-            <version>3.0.2.Final</version>
+            <version>${resteasy.version}</version>
         </dependency>
 
         <dependency>
@@ -66,7 +67,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.20</version>
+            <version>1.21</version>
         </dependency>
 
         <dependency>
