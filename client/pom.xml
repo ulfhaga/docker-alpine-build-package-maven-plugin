@@ -17,7 +17,7 @@
         <docker-maven-plugin.version>0.33.0</docker-maven-plugin.version>
         <quarkus.http.test-port>0</quarkus.http.test-port>
         <skipITs>false</skipITs>
-        <resteasy.version>3.0.2.Final</resteasy.version>
+        <resteasy.version>3.14.0.Final</resteasy.version>
     </properties>
 
     <dependencyManagement>
